@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class Province {
@@ -9,6 +10,8 @@ class Province {
     this.name,
     this.level,
   });
+
+ 
 
   Province copyWith({
     String? id,

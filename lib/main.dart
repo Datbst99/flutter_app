@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_bt/views/home_view.dart';
 import 'package:flutter_app_bt/views/profile_view.dart';
 
 void main(){
@@ -25,7 +26,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true
       ),
-      home: ProfileView(),
+      home: const HomeView(),
     );
   }
 }
