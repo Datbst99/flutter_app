@@ -187,10 +187,22 @@ class _ProfileViewState extends State<ProfileView> {
                   title: const Text("Cơ bản"), 
                   content: Step1Form(formKey: step1FormKey, userInfo: userInfo),
                   isActive: currentStep == 0,
-                )
+                ),
+                Step(
+                  title: const Text("Địa chỉ"), 
+                  content: Step2Form(formKey: step2FormKey, userInfo: userInfo),
+                  isActive: currentStep == 1,
+                ),
+                Step(
+                  title: const Text("Xác nhận"), 
+                  content: ConfirmInfo(userInfo: userInfo),
+                  isActive: currentStep == 2,
+                ),
               ],
             );
-          } else {
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Lỗi: ${snapshot.error}"));
+          }else {
             return const Center(child: LinearProgressIndicator(),);
           }
         },
@@ -199,6 +211,46 @@ class _ProfileViewState extends State<ProfileView> {
   }
 }
 
+class ConfirmInfo extends StatelessWidget {
+  final UserInfo userInfo;
+  const ConfirmInfo({super.key, required this.userInfo});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInfoItem('Họ Và Tên:', userInfo.name),
+          _buildInfoItem("Ngày sinh", userInfo.birthDate != null ? DateFormat('dd/MM/yyyy').format(userInfo.birthDate!) : ''),
+          _buildInfoItem('Email:', userInfo.email),
+          _buildInfoItem('Số điện thoại:', userInfo.phoneNumber),
+          _buildInfoItem('Tỉnh / Thành phố:', userInfo.address?.province?.name),
+          _buildInfoItem('Huyện / Quận:', userInfo.address?.district?.name),
+          _buildInfoItem('Xã / Phường / Thị trấn:', userInfo.address?.ward?.name),
+          _buildInfoItem('Địa chỉ:', userInfo.address?.street),
+        ],
+      ),
+    );
+  }
+}
+
+Widget _buildInfoItem(String label, String? value){
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: TextField(
+      readOnly: true,
+      controller: TextEditingController(text: value),
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+        contentPadding: const EdgeInsets.all(8.0)
+      ),
+      style: const TextStyle(fontSize: 16),
+    ),
+  );
+}
 
 class Step1Form extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -225,7 +277,7 @@ class _Step1FormState extends State<Step1Form> {
     return emailRegex.hasMatch(email);
   }
 
-    bool isMobileValid(String email) {
+  bool isMobileValid(String email) {
     String pattern = r"/(84[3|5|7|8|9])+([0-9]{8})\b/g";
 
     final emailRegex = RegExp(pattern);
