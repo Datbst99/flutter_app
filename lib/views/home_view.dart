@@ -11,7 +11,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trang chủ'),
+        title: const Text('Trang chủ bài viết'),
       ),
       body: FutureBuilder(
         future: getArticles(),
@@ -25,56 +25,81 @@ class HomeView extends StatelessWidget {
               );
             case ConnectionState.done:
               final List<Article> articles = snapshot.data ?? [];
-              return ListView.builder(
-                itemCount: articles.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            articles.elementAt(index).urlToImage ?? "",
-                            width: 100,
-                            height: 110,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.lightBlue,
-                                width: 100,
-                                height: 150,
-                              );
-                            },
-                          ),
+              return Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(15),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25))
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  articles.elementAt(index).title ?? "",
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  articles.elementAt(index).author ?? "",
-                                  style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
-                                ),
-                                Text(
-                                  articles.elementAt(index).publishedAt ?? "",
-                                  style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
-                                )
-                              ],
-                            ),
-                        ))
-                      ],
+                        hintText: 'Search title news',
+                      ),
                     ),
-                  );
-                },
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: articles.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  articles.elementAt(index).urlToImage ?? "",
+                                  width: 100,
+                                  height: 110,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.lightBlue,
+                                      width: 100,
+                                      height: 150,
+                                    );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      articles.elementAt(index).title ?? "",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      articles.elementAt(index).author ?? "",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey),
+                                    ),
+                                    Text(
+                                      articles.elementAt(index).publishedAt ??
+                                          "",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                              ))
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
               );
           }
         },
@@ -90,7 +115,7 @@ class HomeView extends StatelessWidget {
 
   Future<List<Article>> getArticles() async {
     const url =
-        "https://newsapi.org/v2/everything?q=tesla&from=2024-02-19&sortBy=publishedAt&apiKey=61b5ccfa18e94315be008a4d8c86201b";
+        "https://newsapi.org/v2/everything?q=cuoc&from=2024-02-23&sortBy=publishedAt&apiKey=61b5ccfa18e94315be008a4d8c86201b";
     final response = await http.get(Uri.parse(url));
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     final List<Article> articles = [];
